@@ -5,10 +5,12 @@ export default class Conversation{
     public static list = new Collection<string, Conversation>()
     public static presets = Conversations
     public readonly user: User
+    private readonly startMessage: string
     private readonly questions: Array<string>
     private answers: Array<string>
     private step: number = 0
     run(){
+        this.user.send(this.startMessage)
         this.user.send(this.questions[this.step])
     }
     next(msg: Message){
@@ -27,7 +29,7 @@ export default class Conversation{
         
     }
     private checkAnswer: (step: number, text: string) => boolean
-    private readonly handler: (answers: object) => void
+    private readonly handler: (answers: Collection<string, string>) => void
     private getAnswers(): Collection<string, string>{
         let result = new Collection<string, string>()
         for (let i = 0; i < this.questions.length; i++)
@@ -36,12 +38,14 @@ export default class Conversation{
     }
     constructor(
         user: User, 
+        startMessage: string, 
         questions: Array<string>, 
-        handler: (answers: object) => void, 
+        handler: (answers: Collection<string, string>) => void, 
         checkAnswer: (step: number, text: string) => boolean = (step: number, text: string) => {return true}
     ){
         Conversation.list.set(user.id, this)
         this.user = user
+        this.startMessage = startMessage
         this.questions = questions
         this.answers = new Array<string>()
         this.handler = handler
