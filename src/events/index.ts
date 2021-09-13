@@ -1,5 +1,6 @@
-import message from "./message"
+import interactionCreate from "./interactionCreate"
+import messageCreate from "./messageCreate"
 
 export default [
-    message
+    messageCreate, interactionCreate
 ]

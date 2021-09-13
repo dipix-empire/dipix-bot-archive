@@ -1,9 +1,9 @@
-import Event, {EventType} from "../Types/Event"
+import Event, {EventType} from "../types/Event"
 import Discord from 'discord.js'
-import DiscordCommand from "../Types/DiscordCommand"
+import DiscordCommand from "../types/DiscordCommand"
 import Commands from './Commands'
 import App from "../App"
-import Conversation from "../Types/Conversation"
+import Conversation from "../types/Conversation"
 export default new Event(
     "messageCreate",
     (app: App) => {

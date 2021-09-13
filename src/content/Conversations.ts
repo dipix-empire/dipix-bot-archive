@@ -1,5 +1,5 @@
-import { Message, MessageEmbed, TextChannel, Collection } from "discord.js"
-import Conversation from "../Types/Conversation"
+import { Message, MessageEmbed, TextChannel, Collection, MessageActionRow, MessageButton } from "discord.js"
+import Conversation from "../types/Conversation"
 export default {
     newPlayer: (msg: Message) => new Conversation(msg.author, 
         'Вы начали заявку на присоединение к серверу DiPix.\nОбязательные вопросы помечены *. **Ответы будут опубликованы**',[
@@ -21,46 +21,36 @@ export default {
                 name: `Заявка на присоединение от игрока ${msg.author.tag}`,
                 autoArchiveDuration: 1440
             }).then(thread => {
-                let embed = new MessageEmbed()
+                const embed = new MessageEmbed()
                     .setTitle('Детали заявки')
                 answers.each((val, key) => {
                     embed.addField(key, val, true)
                 })
-                thread.send({embeds: [embed]}).then(msg => msg.pin())
-                thread.send(
-                    //TODO: UNCOMMENT IN PRODUCTION!!!
-                    //`На заявку отвечает: <@&${process.env.ADMIN_ROLE_ID}>\n`+
-                    `:white_check_mark: - Принять заявку
-                    :x: - Отклонить заявку 
-                    :grey_question: - Проверить на подлинность
-                    :mailbox: - написать такую же заявку
-                `).then(msg => {
-                    msg.pin()
-                    msg.react('✅').then(()=>msg.react('❌')).then(()=>msg.react('❔')).then(()=>msg.react('📫'))
-                    const filter = (reaction: any, user: any) => {
-                        return ['✅', '❌', '❔','📫'].includes(reaction.emoji.name) && !user.bot;
-                    };
-                    msg.awaitReactions({ filter, max: 4, time: 60000, errors: ['time'] })
-                        .then(collected => {
-                            collected.forEach(reaction => {
-                                switch (reaction?.emoji?.name) {
-                                    case '✅':
-                                        console.log('reaction 1')
-                                        break
-                                    case '❌': 
-                                        console.log('reaction 2')
-                                        break
-                                    case '❔':
-                                        console.log('reaction 3')
-                                        break
-                                    case '📫':
-                                        console.log('reaction 4')
-                                        break
-                                }
-                            })
-                            
-                        });
-                })
+                const msgText = `` //+ `На заявку отвечает <$&${process.env.ADMIN_ROLE_ID}>`
+                const buttons = new MessageActionRow()
+                    .addComponents(
+                        new MessageButton()
+                            .setLabel('Принять')
+                            .setStyle('PRIMARY')
+                            .setCustomId(`form:join:${thread.id}:${msg.author.id}:accept`)
+                            .setDisabled(true),
+                        new MessageButton()
+                            .setLabel('Отклонить')
+                            .setStyle('DANGER')
+                            .setCustomId(`form:join:${thread.id}:${msg.author.id}:deny`)
+                            .setDisabled(true),
+                        new MessageButton()
+                            .setLabel('Проверить на уникальность')
+                            .setStyle('SECONDARY')
+                            .setCustomId(`form:join:${thread.id}:${msg.author.id}:check`)
+                            .setDisabled(true),
+                        new MessageButton()
+                            .setLabel('Написать эту заявку')
+                            .setStyle('SECONDARY')
+                            .setCustomId(`form:common:write`)
+                            .setDisabled(true),
+                    )
+                thread.send({content: msgText, components: [buttons],embeds: [embed]}).then(msg => msg.pin())
             })
         })
     }, (step: number, text: string) => {
