@@ -26,7 +26,8 @@ export default class App {
             'GUILDS',
             'GUILD_MESSAGES',
             'DIRECT_MESSAGES',
-            'DIRECT_MESSAGE_TYPING'
+            'DIRECT_MESSAGE_TYPING',
+            'GUILD_MEMBERS'
         ]})
         this.token = token?.toString() || ""
         this.db = db?.toString() || ""

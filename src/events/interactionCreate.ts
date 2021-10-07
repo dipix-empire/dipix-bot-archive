@@ -1,10 +1,12 @@
-import { ApplicationCommand, Interaction } from "discord.js";
+import { ApplicationCommand, Interaction, MessagePayload } from "discord.js";
 import App from "../App";
 import Event from "../types/Event";
+import commands from "./Commands";
 export default new Event('interactionCreate', (app: App) => {
-    return (interaction: Interaction) => {
+    return async (interaction: Interaction) => {
         if (interaction.isCommand()){
-            console.log(interaction)
+            try {commands.get(interaction.commandName)?.run(app, interaction)}
+            catch (err) {console.log(err)}
         }
     }
 })

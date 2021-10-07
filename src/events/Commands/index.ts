@@ -1,8 +1,9 @@
 import Discord from "discord.js";
 import DiscordCommand from "../../types/DiscordCommand";
-import form from './form'
+//import form from './form'
+import nick from "./nick";
 
-const files = [form]
+const files = [nick]
 
 const commands = new Discord.Collection<string,DiscordCommand>()
 
