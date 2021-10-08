@@ -7,7 +7,7 @@ export default class DiscordCommand {
     public readonly handler: (app: App, interaction: CommandInteraction) => void
     public readonly slashInfo: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">
     run (app: App, interaction: CommandInteraction) {
-        console.log(`Executing command: ${this.name}`)
+        console.log(`Executing command '${this.name}' by '${interaction.user.tag}'`)
         this.handler(app, interaction)
     }
     static parse(text: string, prefix: string) : [command: string, args: string[]] {
