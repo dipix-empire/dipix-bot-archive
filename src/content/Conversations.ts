@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, TextChannel, Collection, MessageActionRow, MessageButton, CommandInteraction } from "discord.js"
+import { Message, MessageEmbed, TextChannel, Collection, MessageActionRow, MessageButton, CommandInteraction, Interaction, ButtonInteraction } from "discord.js"
 import Conversation from "../types/Conversation"
 export default {
     newPlayer: (interaction: CommandInteraction) => new Conversation(interaction.user, 
@@ -34,8 +34,7 @@ export default {
                 new MessageButton()
                     .setCustomId(`form:join:deny:${thread.id}:${interaction.user.id}`)
                     .setStyle('DANGER')
-                    .setLabel('Отклонить')
-                    .setDisabled(true),
+                    .setLabel('Отклонить'),
                 new MessageButton()
                     .setCustomId(`form:join:check:${thread.id}:${interaction.user.id}`)
                     .setStyle('SECONDARY')
@@ -47,32 +46,6 @@ export default {
                     .setLabel('Написать'),
             )
         thread.send({content: msgText, components: [buttons], embeds: [embed]}).then(msg => msg.pin())
-        
-        //         const buttons = new MessageActionRow()
-        //             .addComponents(
-        //                 new MessageButton()
-        //                     .setLabel('Принять')
-        //                     .setStyle('PRIMARY')
-        //                     .setCustomId(`form:join:${thread.id}:${msg.author.id}:accept`)
-        //                     .setDisabled(true),
-        //                 new MessageButton()
-        //                     .setLabel('Отклонить')
-        //                     .setStyle('DANGER')
-        //                     .setCustomId(`form:join:${thread.id}:${msg.author.id}:deny`)
-        //                     .setDisabled(true),
-        //                 new MessageButton()
-        //                     .setLabel('Проверить на уникальность')
-        //                     .setStyle('SECONDARY')
-        //                     .setCustomId(`form:join:${thread.id}:${msg.author.id}:check`)
-        //                     .setDisabled(true),
-        //                 new MessageButton()
-        //                     .setLabel('Написать эту заявку')
-        //                     .setStyle('SECONDARY')
-        //                     .setCustomId(`form:common:write`)
-        //                     .setDisabled(true),
-        //             )
-        //     })
-        // }
     }, (step: number, text: string) => {
         switch(step) {
             case 0:
@@ -85,5 +58,41 @@ export default {
             default:
                 return true 
         }
-    })
+    }),
+    denyReason: (interaction: ButtonInteraction, data: string[]) => new Conversation(
+        interaction.user,
+        '',
+        [
+            'Вы отклонили заявку. Назовите причину отказа'
+        ],
+        async (answers: Collection<string, string>) => {
+            let msg_d = interaction.message as Message
+            const buttons_d = new MessageActionRow()
+                .addComponents(
+                    new MessageButton()
+                    .setCustomId(`form:join:accept:${data[3]}:${data[4]}`)
+                        .setStyle('PRIMARY')
+                        .setLabel('Принять')
+                        .setDisabled(true),
+                    new MessageButton()
+                        .setCustomId(`form:join:deny:${data[3]}:${data[4]}`)
+                        .setStyle('DANGER')
+                        .setLabel('Отклонить')
+                        .setDisabled(true),
+                    new MessageButton()
+                        .setCustomId(`form:join:check:${data[3]}:${data[4]}`)
+                        .setStyle('SECONDARY')
+                        .setLabel('Проверить')
+                        .setDisabled(true),
+                    new MessageButton()
+                        .setCustomId(`form:common:write:join`)
+                        .setStyle('SECONDARY')
+                        .setLabel('Написать'),
+                )
+            await msg_d.edit({components:[buttons_d]})
+            await interaction.editReply({content:`Заявка от <@${data[4]}> отклонена <@${interaction.user.id}> по причине: ${answers.first()}`})
+            let repl_d = await interaction.fetchReply() as Message
+            await repl_d.pin()
+        }
+    )
 }

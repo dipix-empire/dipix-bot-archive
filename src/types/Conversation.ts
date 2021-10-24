@@ -10,7 +10,7 @@ export default class Conversation{
     private answers: Array<string>
     private step: number = 0
     run(){
-        this.user.send(this.startMessage)
+        if (this.startMessage) this.user.send(this.startMessage)
         this.user.send(this.questions[this.step])
     }
     next(msg: Message){
