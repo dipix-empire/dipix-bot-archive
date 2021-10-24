@@ -1,11 +1,13 @@
 import Discord from 'discord.js'
 import Mongoose from 'mongoose'
+import Pterodactyl from './JS/Pterodactyl'
 import events from './events'
 
 export default class App {
     public readonly bot: Discord.Client
     private readonly db: string
     private readonly token: string
+    public readonly panel: Pterodactyl
 
     load() : App {
         events.forEach(e => {
@@ -16,12 +18,15 @@ export default class App {
     }
 
     start () : App {
-        //Mongoose.connect(this.db)
+        if (this.db) Mongoose.connect(this.db)
         this.bot.login(this.token)
         return this
     }
 
-    constructor (token: string | undefined, db: string | undefined) {
+    constructor (
+        token: string | undefined, db: string | undefined,
+        panelData: {host: string | undefined, key: string | undefined, id: string | undefined} | undefined
+    ) {
         this.bot = new Discord.Client({intents: [
             'GUILDS',
             'GUILD_MESSAGES',
@@ -31,5 +36,6 @@ export default class App {
         ]})
         this.token = token?.toString() || ""
         this.db = db?.toString() || ""
+        this.panel = new Pterodactyl(panelData?.host || "", panelData?.key || "", panelData?.id || "")
     }
 }
