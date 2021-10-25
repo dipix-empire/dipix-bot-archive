@@ -1,4 +1,4 @@
-import { ButtonInteraction, GuildMemberRoleManager, Message, MessageActionRow, MessageButton, Role } from "discord.js";
+import { ButtonInteraction, GuildMemberRoleManager, Message, MessageActionRow, MessageButton, Role, RoleResolvable } from "discord.js";
 import App from "../../App";
 import Conversations from "../../content/Conversations";
 import DiscordButton from "../../types/DiscordButton";
@@ -44,6 +44,10 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                         await msg_a.edit({components:[buttons_a]})
                         app.panel.runCommand('say Test message')
                         await interaction.reply({content:`Заявка от <@${data[4]}> принята <@${interaction.user.id}>`})
+                        try {
+                            await interaction.guild?.members?.cache?.get(data[4])?.roles?.add(await interaction.guild.roles.cache.get(process.env.PLAYER_ROLE_ID || "") as RoleResolvable)
+                            await interaction.guild?.members?.cache?.get(data[4])?.roles?.remove(await interaction.guild.roles.cache.get(process.env.GUEST_ROLE_ID || "") as RoleResolvable)
+                        } catch(err) {console.log(err)}
                         let repl_a = await interaction.fetchReply() as Message
                         await repl_a.pin()
                         break
