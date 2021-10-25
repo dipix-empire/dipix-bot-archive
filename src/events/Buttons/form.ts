@@ -1,4 +1,4 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton } from "discord.js";
+import { ButtonInteraction, GuildMemberRoleManager, Message, MessageActionRow, MessageButton, Role } from "discord.js";
 import App from "../../App";
 import Conversations from "../../content/Conversations";
 import DiscordButton from "../../types/DiscordButton";
@@ -16,6 +16,8 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
         case 'join':
                 switch(data[2]) {
                     case 'accept':
+                        let RoleManager_a = await interaction?.member?.roles as GuildMemberRoleManager
+                        if (!RoleManager_a?.cache?.has(process.env.ADMIN_ROLE_ID || "")) return interaction.reply({content: 'Вы не можете принять эту заявку', ephemeral:true})
                         let msg_a = interaction.message as Message
                         const buttons_a = new MessageActionRow()
                             .addComponents(
@@ -46,6 +48,8 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                         await repl_a.pin()
                         break
                     case 'deny':
+                        let RoleManager_d = await interaction?.member?.roles as GuildMemberRoleManager
+                        if (!RoleManager_d?.cache?.has(process.env.ADMIN_ROLE_ID || "")) return interaction.reply({content: 'Вы не можете отклонить эту заявку', ephemeral:true})
                         interaction.reply(`Принят отказ. Ожидание причины...`)
                         Conversations.denyReason(interaction, data).run()
                         break

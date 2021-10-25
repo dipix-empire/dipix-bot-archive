@@ -2,6 +2,7 @@ import Discord from "discord.js";
 import DiscordCommand from "../../types/DiscordCommand";
 import form from './form'
 import nick from "./nick";
+import uptime from "./uptime";
 
 const files = [form, nick]
 

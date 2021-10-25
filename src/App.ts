@@ -8,6 +8,7 @@ export default class App {
     private readonly db: string
     private readonly token: string
     public readonly panel: Pterodactyl
+    public readonly startTime: Date
 
     load() : App {
         events.forEach(e => {
@@ -27,6 +28,7 @@ export default class App {
         token: string | undefined, db: string | undefined,
         panelData: {host: string | undefined, key: string | undefined, id: string | undefined} | undefined
     ) {
+        this.startTime = new Date()
         this.bot = new Discord.Client({intents: [
             'GUILDS',
             'GUILD_MESSAGES',
