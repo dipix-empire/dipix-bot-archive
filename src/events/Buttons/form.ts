@@ -1,4 +1,4 @@
-import { ButtonInteraction, GuildMemberRoleManager, Message, MessageActionRow, MessageButton, Role, RoleResolvable } from "discord.js";
+import { ButtonInteraction, GuildMemberRoleManager, Message, MessageActionRow, MessageButton, Role, RoleResolvable, ThreadChannel } from "discord.js";
 import App from "../../App";
 import Conversations from "../../content/Conversations";
 import DiscordButton from "../../types/DiscordButton";
@@ -50,6 +50,11 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                         } catch(err) {console.log(err)}
                         let repl_a = await interaction.fetchReply() as Message
                         await repl_a.pin()
+                        let thread_a = await app.bot.channels.cache.get(data[3])
+                        if (thread_a?.isThread()) { 
+                            let tread = thread_a as ThreadChannel
+                            tread?.setAutoArchiveDuration(60)
+                        }
                         break
                     case 'deny':
                         let RoleManager_d = await interaction?.member?.roles as GuildMemberRoleManager

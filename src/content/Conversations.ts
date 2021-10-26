@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, TextChannel, Collection, MessageActionRow, MessageButton, CommandInteraction, Interaction, ButtonInteraction } from "discord.js"
+import { Message, MessageEmbed, TextChannel, Collection, MessageActionRow, MessageButton, CommandInteraction, Interaction, ButtonInteraction, ThreadChannel } from "discord.js"
 import Conversation from "../types/Conversation"
 export default {
     newPlayer: (interaction: CommandInteraction) => new Conversation(interaction.user, 
@@ -93,6 +93,11 @@ export default {
             await interaction.editReply({content:`Заявка от <@${data[4]}> отклонена <@${interaction.user.id}> по причине: ${answers.first()}`})
             let repl_d = await interaction.fetchReply() as Message
             await repl_d.pin()
+            let thread_d = await interaction.channel
+            if (thread_d?.isThread()) { 
+                let tread = thread_d as ThreadChannel
+                tread?.setAutoArchiveDuration(60)
+            }
         }
     )
 }
