@@ -1,16 +1,17 @@
 import Discord from 'discord.js'
-import Mongoose from 'mongoose'
-import Pterodactyl from './JS/Pterodactyl'
+import Pterodactyl from './js/Pterodactyl'
 import events from './events'
+import Database from './types/Database'
 
 export default class App {
     public readonly bot: Discord.Client
-    private readonly db: string
+    public readonly db: Database
     private readonly token: string
     public readonly panel: Pterodactyl
     public readonly startTime: Date
 
-    load() : App {
+    async load() : Promise<App> {
+        await this.db.connect().then(() => console.log('Connected to database'))
         events.forEach(e => {
             this.bot[e.type](e.name, e.handler(this))
             console.log(`Connected event ${e.name}`)
@@ -19,14 +20,14 @@ export default class App {
     }
 
     start () : App {
-        if (this.db) Mongoose.connect(this.db)
         this.bot.login(this.token)
         return this
     }
 
     constructor (
-        token: string | undefined, db: string | undefined,
-        panelData: {host: string | undefined, key: string | undefined, id: string | undefined} | undefined
+        token: string | undefined,
+        panelData: {host: string | undefined, key: string | undefined, id: string | undefined} | undefined,
+        database: {id: string | undefined, keyPath: string | undefined} | undefined
     ) {
         this.startTime = new Date()
         this.bot = new Discord.Client({intents: [
@@ -37,7 +38,8 @@ export default class App {
             'GUILD_MEMBERS'
         ]})
         this.token = token?.toString() || ""
-        this.db = db?.toString() || ""
+        this.db = new Database(this, database?.id || "", database?.keyPath || "")
         this.panel = new Pterodactyl(panelData?.host || "", panelData?.key || "", panelData?.id || "")
+        
     }
 }

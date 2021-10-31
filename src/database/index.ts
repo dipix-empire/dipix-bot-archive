@@ -1,4 +1,4 @@
-import schema from './schema'
-export default {
-    schema
-}
+import total from "./total";
+import user from "./user";
+
+export default [total, user]

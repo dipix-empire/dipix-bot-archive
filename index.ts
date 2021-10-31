@@ -1,13 +1,19 @@
 import App from './src/App'
 import DotEnv from 'dotenv'
 DotEnv.config()
-
-new App(
+let app = new App(
     process.env.TOKEN,
-    process.env.DB,
     {
         host: process.env.PANELHOST,
         key: process.env.PTERODACTYL,
         id: process.env.PANEL_ID
+    },
+    {
+        id: process.env.SHEET_ID,
+        keyPath: process.env.GOOGLE_APPLICATION_CREDENTIALS
     }
-).load().start()
+);
+(async () => {
+    await app.load()
+    app.start()  
+})()
