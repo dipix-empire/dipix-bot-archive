@@ -21,7 +21,7 @@ export default {
             name: `Заявка на присоединение от игрока ${interaction.user.tag}`,
             autoArchiveDuration: 1440
         })
-        let msgText = `На заявку отвечает ` //+ `<$&${process.env.ADMIN_ROLE_ID}>`
+        let msgText = `На заявку отвечает ` + `<$&${process.env.ADMIN_ROLE_ID}>`
         let embed = new MessageEmbed().setTitle('Детали заявки')
         let bufferData: string[] = []
         answers.each((val, key) => {
