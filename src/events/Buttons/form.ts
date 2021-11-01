@@ -33,23 +33,28 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                                     .setStyle('DANGER')
                                     .setLabel('Отклонить')
                                     .setDisabled(true),
-                                new MessageButton()
+                                    new MessageButton()
                                     .setCustomId(`form:join:check:${data[3]}:${data[4]}`)
                                     .setStyle('SECONDARY')
                                     .setLabel('Проверить')
                                     .setDisabled(true),
-                                new MessageButton()
+                                    new MessageButton()
                                     .setCustomId(`form:common:write:join`)
                                     .setStyle('SECONDARY')
                                     .setLabel('Написать'),
-                            )
+                                    )
                         await msg_a.edit({components:[buttons_a]})
                         let form_data = (app.buffer.get(`form:join:${data[4]}`) as any)
                         app.panel.runCommand(`easywl add ${form_data[1]}`)
+                        await interaction.reply({content:`Заявка от <@${data[4]}> принята <@${interaction.user.id}>`})
+
                         let forms_data = JSON.parse(await app.db.modules.get('forms')?.get() || "")
                         forms_data[data[3]] = form_data
                         app.db.modules.get('forms')?.update(JSON.stringify(forms_data))
-                        await interaction.reply({content:`Заявка от <@${data[4]}> принята <@${interaction.user.id}>`})
+                        let users = JSON.parse(await app.db.modules.get('user')?.get() || "{}")
+                        users[data[4]] = {nickname: form_data[1], age: form_data[2], req: data[3]}
+                        app.db.modules.get('user')?.update(JSON.stringify(users))
+                        
                         try {
                             let user = await interaction.guild?.members?.cache?.get(data[4])
                             await user?.roles?.add(await interaction?.guild?.roles?.cache?.get(process.env.PLAYER_ROLE_ID || "") as RoleResolvable)
