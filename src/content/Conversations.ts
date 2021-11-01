@@ -42,13 +42,12 @@ export default {
             new MessageButton()
             .setCustomId(`form:join:check:${thread.id}:${interaction.user.id}`)
             .setStyle('SECONDARY')
-            .setLabel('Проверить')
-            .setDisabled(true),
+            .setLabel('Проверить'),
             new MessageButton()
             .setCustomId(`form:common:write:join`)
             .setStyle('SECONDARY')
             .setLabel('Написать'),
-            )
+        )
         thread.send({content: msgText, components: [buttons], embeds: [embed]}).then(msg => msg.pin())
     }, (step: number, text: string) => {
         switch(step) {
@@ -63,7 +62,7 @@ export default {
                 return true 
         }
     }),
-    denyReason: (interaction: ButtonInteraction, data: string[]) => new Conversation(
+    denyReason: (app:App, interaction: ButtonInteraction, data: string[]) => new Conversation(
         interaction.user,
         '',
         [
@@ -102,6 +101,8 @@ export default {
                 let tread = thread_d as ThreadChannel
                 tread?.setAutoArchiveDuration(60)
             }
+            app.buffer.delete(`form:join:${data[4]}`)
+            app.buffer.delete(`button:form:${data[3]}`)
         }
     )
 }

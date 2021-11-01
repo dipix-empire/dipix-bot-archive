@@ -16,6 +16,8 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
         case 'join':
                 switch(data[2]) {
                     case 'accept':
+                        if (app.buffer.get(`button:form:${data[3]}`)) return interaction.reply({content:'К заявке применено другое действие. Пожалуйста, подождите...', ephemeral:true}) 
+                        app.buffer.set(`button:form:${data[3]}`, true)
                         let RoleManager_a = await interaction?.member?.roles as GuildMemberRoleManager
                         if (!RoleManager_a?.cache?.has(process.env.ADMIN_ROLE_ID || "")) return interaction.reply({content: 'Вы не можете принять эту заявку', ephemeral:true})
                         let msg_a = interaction.message as Message
@@ -80,12 +82,29 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                             tread?.setAutoArchiveDuration(60)
                         }
                         app.buffer.delete(`form:join:${data[4]}`)
+                        app.buffer.delete(`button:form:${data[3]}`)
                         break
                     case 'deny':
+                        if (app.buffer.get(`button:form:${data[3]}`)) return interaction.reply({content:'К заявке применено другое действие. Пожалуйста, подождите...', ephemeral:true}) 
+                        app.buffer.set(`button:form:${data[3]}`, true)
                         let RoleManager_d = await interaction?.member?.roles as GuildMemberRoleManager
                         if (!RoleManager_d?.cache?.has(process.env.ADMIN_ROLE_ID || "")) return interaction.reply({content: 'Вы не можете отклонить эту заявку', ephemeral:true})
                         interaction.reply(`Принят отказ. Ожидание причины...`)
                         Conversations.denyReason(app, interaction, data).run()
+                        break
+                    case 'check':
+                        if (app.buffer.get(`button:form:${data[3]}`)) return interaction.reply({content:'К заявке применено другое действие. Пожалуйста, подождите...', ephemeral:true}) 
+                        app.buffer.set(`button:form:${data[3]}`, true)
+                        interaction.reply({content: "Запрошена проверка на уникальность, ожидение результата..."})
+                        let cross = ""
+                        let forms = JSON.parse(await app.db.modules.get('forms')?.get() || "{}")
+                        let answers = (app.buffer.get(`form:join:${data[4]}`) as any)
+                        Object.keys(forms).forEach(e => {
+                            for (let i = 4; i < 6; i++)
+                                if (forms[e][i].toLowerCase() == answers[i].toLowerCase() && answers[i].toLowerCase() != '-') cross+= `Ответ на вопрос №${i} совпадает с ответом в заявке <#${e}>\n`
+                        })
+                        interaction.editReply(`Результат проверки:\n${ cross ? cross : `Совпадений не обнаружено` }`)
+                        app.buffer.delete(`button:form:${data[3]}`)
                         break
                 }
             break
