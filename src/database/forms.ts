@@ -2,10 +2,10 @@ import App from "../App"
 import DatabaseModule from "../types/DatabaseModule"
 
 export default (app: App) => new DatabaseModule(
-    'user',
-    'User',
+    'forms',
+    'Forms',
     (module: DatabaseModule) => async () => {
-        let last = JSON.parse(await app.db.modules.get('total')?.get() || '{}')?.lastFree?.user
+        let last = JSON.parse(await app.db.modules.get('total')?.get() || '{}')?.lastFree?.forms
         if (!last) return ""
         let data = (await app.db.get(module.sheet, 'A2', `B${last}`))
         let res: {[key: string]: Object} = {}
@@ -26,7 +26,7 @@ export default (app: App) => new DatabaseModule(
         await app.db.update(module.sheet, 'A2', `B${newLast-1}`, newData)
         let totalData = JSON.parse(await app.db.modules.get('total')?.get() || '{}')
         if (totalData) {
-            totalData.lastFree.user = newLast
+            totalData.lastFree.forms = newLast
             await app.db.modules.get('total')?.update(JSON.stringify(totalData))
         }
     }

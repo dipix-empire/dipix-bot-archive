@@ -6,6 +6,7 @@ import Database from './types/Database'
 export default class App {
     public readonly bot: Discord.Client
     public readonly db: Database
+    public readonly buffer: Discord.Collection<string, Object>
     private readonly token: string
     public readonly panel: Pterodactyl
     public readonly startTime: Date
@@ -40,6 +41,6 @@ export default class App {
         this.token = token?.toString() || ""
         this.db = new Database(this, database?.id || "", database?.keyPath || "")
         this.panel = new Pterodactyl(panelData?.host || "", panelData?.key || "", panelData?.id || "")
-        
+        this.buffer = new Discord.Collection<string, Object>()
     }
 }

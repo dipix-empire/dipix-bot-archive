@@ -8,7 +8,7 @@ export default new DiscordCommand('form', 'Написать заявку', (app:
     let type = interaction.options.getString('type')
     switch (type){
         case 'join':
-            Conversation.presets.newPlayer(interaction).run()
+            Conversation.presets.newPlayer(app, interaction).run()
             return interaction.reply(`Ожидание конца опроса...`)
         default:
             return interaction.reply({content:'Неизвестный тип заявки', ephemeral: true})

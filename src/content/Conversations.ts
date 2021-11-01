@@ -1,7 +1,8 @@
 import { Message, MessageEmbed, TextChannel, Collection, MessageActionRow, MessageButton, CommandInteraction, Interaction, ButtonInteraction, ThreadChannel } from "discord.js"
+import App from "../App"
 import Conversation from "../types/Conversation"
 export default {
-    newPlayer: (interaction: CommandInteraction) => new Conversation(interaction.user, 
+    newPlayer: (app:App, interaction: CommandInteraction) => new Conversation(interaction.user, 
         'Вы начали заявку на присоединение к серверу DiPix.\nОбязательные вопросы помечены *, на необязательные вопросы можно ответить -\n**Ответы будут опубликованы**',[
         'Вы принимаете правила сервера? * ',
         'Ваш ник в Майнкрафт? * ',
@@ -20,30 +21,33 @@ export default {
             name: `Заявка на присоединение от игрока ${interaction.user.tag}`,
             autoArchiveDuration: 1440
         })
-        let msgText = `На заявку отвечает` //+ `<$&${process.env.ADMIN_ROLE_ID}>`
+        let msgText = `На заявку отвечает ` //+ `<$&${process.env.ADMIN_ROLE_ID}>`
         let embed = new MessageEmbed().setTitle('Детали заявки')
+        let bufferData: string[] = []
         answers.each((val, key) => {
             embed.addField(key, val, true)
+            bufferData.push(val)
         })
+        app.buffer.set(`form:join:${interaction.user.id}`, bufferData)
         const buttons = new MessageActionRow()
-            .addComponents(
-                new MessageButton()
-                    .setCustomId(`form:join:accept:${thread.id}:${interaction.user.id}`)
-                    .setStyle('PRIMARY')
-                    .setLabel('Принять'),
-                new MessageButton()
-                    .setCustomId(`form:join:deny:${thread.id}:${interaction.user.id}`)
-                    .setStyle('DANGER')
-                    .setLabel('Отклонить'),
-                new MessageButton()
-                    .setCustomId(`form:join:check:${thread.id}:${interaction.user.id}`)
-                    .setStyle('SECONDARY')
-                    .setLabel('Проверить')
-                    .setDisabled(true),
-                new MessageButton()
-                    .setCustomId(`form:common:write:join`)
-                    .setStyle('SECONDARY')
-                    .setLabel('Написать'),
+        .addComponents(
+            new MessageButton()
+            .setCustomId(`form:join:accept:${thread.id}:${interaction.user.id}`)
+            .setStyle('PRIMARY')
+            .setLabel('Принять'),
+            new MessageButton()
+            .setCustomId(`form:join:deny:${thread.id}:${interaction.user.id}`)
+            .setStyle('DANGER')
+            .setLabel('Отклонить'),
+            new MessageButton()
+            .setCustomId(`form:join:check:${thread.id}:${interaction.user.id}`)
+            .setStyle('SECONDARY')
+            .setLabel('Проверить')
+            .setDisabled(true),
+            new MessageButton()
+            .setCustomId(`form:common:write:join`)
+            .setStyle('SECONDARY')
+            .setLabel('Написать'),
             )
         thread.send({content: msgText, components: [buttons], embeds: [embed]}).then(msg => msg.pin())
     }, (step: number, text: string) => {
