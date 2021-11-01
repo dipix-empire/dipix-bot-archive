@@ -1,0 +1,14 @@
+Bot uses environment vars, support .env file in project root
+requirement vars:
+```env
+TOKEN="BOT TOKEN"
+PTERODACTYL="PTERODACTYL TOKEN"
+PANELHOST="PTERODACTYL HOST URI"
+PANEL_ID="PTERODACTYL SERVER ID"
+CLIENT="BIT CLIENT SERCET"
+DEV= DEV MODE (optional, true/false)
+FORMS_CHANNEL_ID=""
+ADMIN_ROLE_ID=""
+PLAYER_ROLE_ID=""
+GUEST_ROLE_ID=""
+```
