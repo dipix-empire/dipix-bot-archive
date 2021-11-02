@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "primeval-pixel-330416",
+  "private_key_id": "74822b178ff31d7d819d6a391a4b5266124dd303",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQCg1m8WrgQ2eZuF\nfKL1MGrdIcOxrvBWQ36HBH62lEhqNrPwcKBs7IjkkYgGXVTD4MBJWwiHMZ9CtAIC\nz0FDhvQfq9RrCIB4tAF2GVlX3pdRNlMSe0Q4rU7Pilf64oDqAFmy+Md8rcMicw/O\ntpAGrzluOInyrPpd4NTu+X/0U1YlZ2aEYnZyvjauAz/2aifIeBj24ZXMrrX9Nj1X\nhhYOS2NKnQhkN0BTqqkMwVvsoyUt4WN8ztDiABZgyU3n4GMMeZXVugmMQkVwOgO1\nKbhJ/NeeKIeRvA/QSBo7MqMCEWRMbEIMtNzRYs5DiNXPYWk/eA795tnRhN+weoxE\nkhBdkL1HAgMBAAECgf8LVToECXOjlJt6B0Re/dqjEgzae16o7/CClwKOKIiIXa9t\namosH9ejsMHUSwJrLYHLL3BnAacLHgyybq/DEMl2U1dJfHF0CHU5pGvha9De1oRY\nFSBRXFsmfUCcNOjUL3hfkHLmvaBfpybJegdblUNw2ETLKIHBqkzMsML8Kbtc+HzB\nJKZ0zQ1fxa/WuEmBLd5HL5GESTzMYIx8Ix09kQc2xUJ46ltnpVE31hMcK41feXeG\nsNXri1aplXp+jbHoi0om1jtw9gW+M0ekaIP/PhoK/98SxJFM61Vg7GDdIYBheKu9\ngQazkzxCnq6slmJ6jv/pGd3t2ADRVpask1l3ohECgYEAy1jimY2U3yKkKEwWLfeT\ngWFtom4Tk4M/CYDP04qoxXEEI2ccGSQDMSypxSZ4q5/we/P7fT4vX8KBvHABHJQ6\naPJYVZF6DtkHyPd3L6XwA3buP4XpXmhXc3VwwN6h6aF7gWA8Pvrstcqf3x+x+kb9\nRrb4qTjZ/nPkZ935llUiV5UCgYEAynvAFqJRnpj7BUb3xzi4Em1AicvIycmNq2D5\nxX0VHtBUCw8DFiOXWFnq6G90JL1lwQPFJCtaBbo1yb1wLV4+KHp4F49eW6HvwyQV\nU9sXcy3Vtjmj30O96ldXCsybjFuoEgTYPP4NsD3b7bbwxpS/BFNv5XyQe2No1yKR\nEkXNGmsCgYAlqJNmjpLYdAjksZqV7rixiEKOh0Y21mKRNvrGGXLCBfkXOVw5x7KT\no8rZCRPl7NvTiM61VhPd7x6psDB0g3sBvoffaO6q20SW0kWPXHLDoX3j47/hTP+N\nEV3NSi3AH7jIr/LYUw4NaLYM00jZqdX0B6Sraizs87eECNbVIXUXtQKBgGcQ7KrY\nvrD677M094Spw1Bl2hcJ6s+Dz5/vgdPboneH1W+3mXuYbD4lruPXb4gP/A5ua9fI\nVU9bBGwHCGWfdgZGqIBdkssTt6Zd5JlFiT8wknrqBhbsNWxmPsEZewfL09YwLx2E\nt9UA98SdfRuntT9vdSKb8DNOW5w+VRe2/fq3AoGBALTtSC0Yxl1yIChIbyvTL+j5\nnenE7Vlos7OUkFrvPpD9SYjzqJHjUuh5ss5J131a6af3VQNKajjVHsTZHptERJuP\nnMfO4nDP0FtjpTaw+9Qu8oIjl7sgxzOzszsqRUUN9d6feuCKm2OKOIiToodCWAyG\nHa3D+e7JTQ2fz+AayYGV\n-----END PRIVATE KEY-----\n",
+  "client_email": "dipix-bot@primeval-pixel-330416.iam.gserviceaccount.com",
+  "client_id": "108530288721563784786",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dipix-bot%40primeval-pixel-330416.iam.gserviceaccount.com"
+}
