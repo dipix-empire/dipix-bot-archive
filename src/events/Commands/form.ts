@@ -6,6 +6,7 @@ import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builde
 
 export default new DiscordCommand('form', 'Написать заявку', (app: App, interaction: CommandInteraction) => {
     let type = interaction.options.getString('type')
+    if (interaction.channelId != process.env.FORMS_CHANNEL_ID) return interaction.reply({content:`Неправильный канал для заявок, используйте <#${process.env.FORMS_CHANNEL_ID}>`, ephemeral: true})
     switch (type){
         case 'join':
             Conversation.presets.newPlayer(app, interaction).run()
