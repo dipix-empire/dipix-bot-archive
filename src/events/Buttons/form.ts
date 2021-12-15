@@ -45,7 +45,7 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                                     )
                         await msg_a.edit({components:[buttons_a]})
                         let form_data = (app.buffer.get(`form:join:${data[4]}`) as any)
-                        app.panel.runCommand(`easywl add ${form_data[1]}`)
+                        app.panel.runCommand(`whitelist add ${form_data[1]}`)
                         await interaction.reply({content:`Заявка от <@${data[4]}> принята <@${interaction.user.id}>`})
 
                         let forms_data = JSON.parse(await app.db.modules.get('forms')?.get() || "")
