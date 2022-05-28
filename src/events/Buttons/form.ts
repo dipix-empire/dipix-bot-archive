@@ -19,7 +19,10 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                         if (app.buffer.get(`button:form:${data[3]}`)) return interaction.reply({content:'К заявке применено другое действие. Пожалуйста, подождите...', ephemeral:true}) 
                         app.buffer.set(`button:form:${data[3]}`, true)
                         let RoleManager_a = await interaction?.member?.roles as GuildMemberRoleManager
-                        if (!RoleManager_a?.cache?.has(process.env.ADMIN_ROLE_ID || "")) return interaction.reply({content: 'Вы не можете принять эту заявку', ephemeral:true})
+                        if (!RoleManager_a?.cache?.has(process.env.ADMIN_ROLE_ID || "")) { 
+                            app.buffer.delete(`button:form:${data[3]}`)
+                            return interaction.reply({content: 'Вы не можете принять эту заявку', ephemeral:true})
+                        }
                         let msg_a = interaction.message as Message
                         const buttons_a = new MessageActionRow()
                             .addComponents(
@@ -45,7 +48,8 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                                     )
                         await msg_a.edit({components:[buttons_a]})
                         let form_data = (app.buffer.get(`form:join:${data[4]}`) as any)
-                        app.panel.runCommand(`whitelist add ${form_data[1]}`)
+                        // app.panel.runCommand(`whitelist add ${form_data[1]}`)
+                        app.servertap.send(`whitelist add ${form_data[1]}`)
                         await interaction.reply({content:`Заявка от <@${data[4]}> принята <@${interaction.user.id}>`})
 
                         let forms_data = JSON.parse(await app.db.modules.get('forms')?.get() || "")
@@ -93,7 +97,10 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                         if (app.buffer.get(`button:form:${data[3]}`)) return interaction.reply({content:'К заявке применено другое действие. Пожалуйста, подождите...', ephemeral:true}) 
                         app.buffer.set(`button:form:${data[3]}`, true)
                         let RoleManager_d = await interaction?.member?.roles as GuildMemberRoleManager
-                        if (!RoleManager_d?.cache?.has(process.env.ADMIN_ROLE_ID || "")) return interaction.reply({content: 'Вы не можете отклонить эту заявку', ephemeral:true})
+                        if (!RoleManager_d?.cache?.has(process.env.ADMIN_ROLE_ID || "")) {
+                            app.buffer.delete(`button:form:${data[3]}`)
+                            return interaction.reply({content: 'Вы не можете отклонить эту заявку', ephemeral:true})
+                        }
                         interaction.reply(`Принят отказ. Ожидание причины...`)
                         Conversations.denyReason(app, interaction, data).run()
                         break

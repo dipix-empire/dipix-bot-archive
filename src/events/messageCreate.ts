@@ -12,6 +12,10 @@ export default new Event(
         if (msg.author.bot) return
         if(Conversation.list.has(msg.author.id) && msg.channel.type === 'DM')
             Conversation.list.get(msg.author.id)?.next(msg)
+        if (msg.channel.id == process.env.CONSOLE_CHANNEL_ID) {
+            if (msg.member?.roles.cache.has(process.env.ADM_ROLE_ID || "") && !msg.content.startsWith('#'))
+                app.servertap.send(msg.content)
+        }
     }},
     EventType.on
 )
