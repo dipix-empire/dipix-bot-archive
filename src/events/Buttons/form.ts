@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import { ButtonInteraction, GuildMemberRoleManager, Message, MessageActionRow, MessageButton, Role, RoleResolvable, ThreadChannel } from "discord.js";
 import App from "../../App";
 import Conversations from "../../content/Conversations";
@@ -52,12 +53,28 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                         app.servertap.send(`whitelist add ${form_data[1]}`)
                         await interaction.reply({content:`Заявка от <@${data[4]}> принята <@${interaction.user.id}>`})
 
-                        let forms_data = JSON.parse(await app.db.modules.get('forms')?.get() || "")
-                        forms_data[data[3]] = form_data
-                        app.db.modules.get('forms')?.update(JSON.stringify(forms_data))
-                        let users = JSON.parse(await app.db.modules.get('user')?.get() || "{}")
-                        users[data[4]] = {nickname: form_data[1], age: form_data[2], req: data[3]}
-                        app.db.modules.get('user')?.update(JSON.stringify(users))
+                        // let forms_data = JSON.parse(await app.db.modules.get('forms')?.get() || "")
+                        // forms_data[data[3]] = form_data
+                        // app.db.modules.get('forms')?.update(JSON.stringify(forms_data))
+                        // let users = JSON.parse(await app.db.modules.get('user')?.get() || "{}")
+                        // users[data[4]] = {nickname: form_data[1], age: form_data[2], req: data[3]}
+                        // app.db.modules.get('user')?.update(JSON.stringify(users))
+                        
+                        let req = await app.db.request.create({
+                            data: {
+                                thread: data[3],
+                                fields: form_data
+                            }
+                        })
+                        await app.db.user.create({
+                            data: {
+                                nickname: form_data[1],
+                                age: form_data[2],
+                                discord: data[4],
+                                status: "waitingForPays",
+                                requestId: req.id
+                            }
+                        })
                         
                         try {
                             let user = await interaction.guild?.members?.cache?.get(data[4])
@@ -107,13 +124,19 @@ export default new DiscordButton('form', async (app: App, interaction: ButtonInt
                     case 'check':
                         if (app.buffer.get(`button:form:${data[3]}`)) return interaction.reply({content:'К заявке применено другое действие. Пожалуйста, подождите...', ephemeral:true}) 
                         app.buffer.set(`button:form:${data[3]}`, true)
-                        interaction.reply({content: "Запрошена проверка на уникальность, ожидение результата..."})
+                        interaction.reply({content: "Запрошена проверка на уникальность, ожидание результата..."})
                         let cross = ""
-                        let forms = JSON.parse(await app.db.modules.get('forms')?.get() || "{}")
+                        // let forms = JSON.parse(await app.db.modules.get('forms')?.get() || "{}")
+                        let forms = await app.db.request.findMany()
                         let answers = (app.buffer.get(`form:join:${data[4]}`) as any)
-                        Object.keys(forms).forEach(e => {
+                        forms.forEach(e => {
                             for (let i = 4; i < 6; i++)
-                                if (forms[e][i].toLowerCase() == answers[i].toLowerCase() && answers[i].toLowerCase() != '-') cross+= `Ответ на вопрос №${i} совпадает с ответом в заявке <#${e}>\n`
+                                if (e.fields[i].toLowerCase() == answers[i].toLowerCase() && answers[i].toLowerCase() != '-') {
+                                    cross+= `Ответ на вопрос №${i} совпадает с ответом в заявке <#${e.thread}>\n`
+                                    let thread = app.bot.channels.cache.get(e.thread) as ThreadChannel
+                                    if (thread.isThread()) thread?.setArchived(false)
+                                }
+                                
                         })
                         interaction.editReply(`Результат проверки:\n${ cross ? cross : `Совпадений не обнаружено` }`)
                         app.buffer.delete(`button:form:${data[3]}`)

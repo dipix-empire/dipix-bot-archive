@@ -1,11 +1,10 @@
 import Discord, { TextChannel } from 'discord.js'
 import events from './events'
-import Database from './types/Database'
-import { WebSocket } from "ws"
 import ServerTap from './types/ServerTap'
+import { PrismaClient } from '@prisma/client'
 export default class App {
     public readonly bot: Discord.Client
-    public readonly db: Database
+    public readonly db: PrismaClient
     public readonly buffer: Discord.Collection<string, Object>
     public readonly startTime: Date
     public readonly servertap: ServerTap
@@ -13,7 +12,7 @@ export default class App {
     private readonly token: string
     
     async load() : Promise<App> {
-        await this.db.connect().then(() => console.log('Connected to database'))
+        await this.db.$connect()
         events.forEach(e => {
             this.bot[e.type](e.name, e.handler(this))
             console.log(`Connected event ${e.name}`)
@@ -46,7 +45,8 @@ export default class App {
             'GUILD_MEMBERS'
         ]})
         this.token = token?.toString() || ""
-        this.db = new Database(this, database?.id || "", database?.keyPath || "")
+        this.db = new PrismaClient()
+        // this.db = new Database(this, database?.id || "", database?.keyPath || "")
         this.buffer = new Discord.Collection<string, Object>()
         this.servertap = new ServerTap(serverApi.url, serverApi.key)
     }
