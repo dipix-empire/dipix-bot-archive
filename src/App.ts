@@ -2,12 +2,14 @@ import Discord, { TextChannel } from 'discord.js'
 import events from './events'
 import ServerTap from './types/ServerTap'
 import { PrismaClient } from '@prisma/client'
+import { EventEmitter } from 'stream'
 export default class App {
     public readonly bot: Discord.Client
     public readonly db: PrismaClient
     public readonly buffer: Discord.Collection<string, Object>
     public readonly startTime: Date
     public readonly servertap: ServerTap
+    public readonly events: EventEmitter
 
     private readonly token: string
     
@@ -49,5 +51,6 @@ export default class App {
         // this.db = new Database(this, database?.id || "", database?.keyPath || "")
         this.buffer = new Discord.Collection<string, Object>()
         this.servertap = new ServerTap(serverApi.url, serverApi.key)
+        this.events = new EventEmitter()
     }
 }

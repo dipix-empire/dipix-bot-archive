@@ -7,7 +7,7 @@ export default class Event {
 
     constructor (
         name: keyof Discord.ClientEvents, 
-        handler: (app: App) => (...params: any[]) => void = () => () => {return},
+        handler: (app: App) => (...params: any[]) => void | Promise<void> = () => () => {return},
         type: EventType = EventType.on
     ){
         this.type = type

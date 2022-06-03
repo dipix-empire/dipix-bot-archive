@@ -5,50 +5,46 @@ export default class Conversation{
     public static list = new Collection<string, Conversation>()
     public static presets = Conversations
     public readonly user: User
-    private readonly startMessage: string
-    private readonly questions: Array<string>
-    private answers: Array<string>
-    private step: number = 0
-    run(){
-        if (this.startMessage) this.user.send(this.startMessage)
-        this.user.send(this.questions[this.step])
-    }
-    next(msg: Message){
-        if (this.checkAnswer(this.step, msg.content)){
-            this.answers[this.step] = msg.content
-            if (this.step < this.questions.length - 1){
-                this.step++
-                this.user.send(this.questions[this.step])
-            }
-            else {
-                Conversation.list.delete(msg.author.id)
-                this.handler(this.getAnswers())
-            }
-        }
-        else msg.channel.send('Ответ не подходит, попробуйте снова')
+    public readonly startMessage: string
+    public readonly questions: {question: string, answerRegExp: RegExp}[]
+    public answers: Array<string>
+    public step: number = 0
+    public incorrects: number = 0
+    // run(){
+    //     if (this.startMessage) this.user.send(this.startMessage)
+    //     this.user.send(this.questions[this.step].question)
+    // }
+    // next(msg: Message){
+    //     if (msg.content){
+    //         this.answers[this.step] = msg.content
+    //         if (this.step < this.questions.length - 1){
+    //             this.step++
+    //             this.user.send(this.questions[this.step])
+    //         }
+    //         else {
+    //             Conversation.list.delete(msg.author.id)
+    //             this.handler(this.getAnswers())
+    //         }
+    //     }
+    //     else msg.channel.send('Ответ не подходит, попробуйте снова')
         
-    }
-    private checkAnswer: (step: number, text: string) => boolean
-    private readonly handler: (answers: Collection<string, string>) => void
-    private getAnswers(): Collection<string, string>{
-        let result = new Collection<string, string>()
-        for (let i = 0; i < this.questions.length; i++)
-            result.set(this.questions[i], this.answers[i])
-        return result
-    }
+    // }
+    // private readonly handler: (answers: Collection<string, string>) => void
+    // private getAnswers(): Collection<string, string>{
+    //     let result = new Collection<string, string>()
+    //     for (let i = 0; i < this.questions.length; i++)
+    //         result.set(this.questions[i], this.answers[i])
+    //     return result
+    // }
     constructor(
         user: User, 
         startMessage: string, 
-        questions: Array<string>, 
-        handler: (answers: Collection<string, string>) => void, 
-        checkAnswer: (step: number, text: string) => boolean = (step: number, text: string) => {return true}
+        questions: {question: string, answerRegExp: RegExp}[] 
     ){
         Conversation.list.set(user.id, this)
         this.user = user
         this.startMessage = startMessage
         this.questions = questions
         this.answers = new Array<string>()
-        this.handler = handler
-        this.checkAnswer = checkAnswer
     }
 }
